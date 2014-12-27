@@ -1,0 +1,11 @@
+--- lldb/scripts/Python/modules/readline/Makefile.gj	2014-12-28 04:56:50.513692285 -0800
++++ lldb/scripts/Python/modules/readline/Makefile	2014-12-28 04:59:20.757562126 -0800
+@@ -75,7 +75,7 @@ ifeq ($(HOST_OS),FreeBSD)
+ endif
+ 
+ # FIXME: dynamically construct the version from `python -V`
+-PYTHON_VERSION:=2.7
++PYTHON_VERSION:=$(shell $(PYTHON) -c "from distutils.sysconfig import get_python_version; print get_python_version()")
+ LLDB_PYTHON_MODULE_REL_DIR:=python$(PYTHON_VERSION)/site-packages
+ LLDB_PYTHON_MODULE_DIR:=$(LibDir)/$(LLDB_PYTHON_MODULE_REL_DIR)
+ 

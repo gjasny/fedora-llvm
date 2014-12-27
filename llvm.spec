@@ -11,18 +11,27 @@
 %else
   %bcond_with ocaml
 %endif
-%ifarch %ix86 x86_64
-  %bcond_without gold
-%else
-  %bcond_with gold
-%endif
 # lldb not ported to anything but x86 so far.
 %ifarch x86_64 %{ix86}
   %bcond_without lldb
 %else
   %bcond_with lldb
 %endif
-
+%if 0%{?rhel}%{?fedora} >= 7
+  %ifarch %ix86 x86_64
+    %bcond_without gold
+  %else
+    %bcond_with gold
+  %endif
+%else
+# pure 0.55 doesn't work with newer versions of llvm and 0.58 doesn't work with old libstdc++
+# See https://bugzilla.redhat.com/show_bug.cgi?id=1058472
+Obsoletes: pure <= 0.55
+%define python2_sitearch %python_sitearch
+%define devtoolset devtoolset-3
+BuildRequires: %{devtoolset}-gcc
+BuildRequires: %{devtoolset}-gcc-c++
+%endif
 
 # Documentation install path
 %if 0%{?fedora} < 20
@@ -76,6 +85,8 @@ Patch100:       clang-fake-gcc43.patch
 Patch200:       lldb-python.patch
 Patch201:       lldb-fix-expression-parser.patch
 Patch202:       lldb-python-module-symlink.patch
+Patch203:       lldb-python-version.patch
+
 
 BuildRequires:  bison
 BuildRequires:  chrpath
@@ -337,6 +348,7 @@ pushd tools/lldb
 %patch200 -p1 -b .python
 %patch201 -p2
 %patch202 -p1
+%patch203 -p1
 sed -i s/@lib@/%{_lib}/g scripts/Python/modules/readline/Makefile
 popd
 %endif
@@ -355,8 +367,13 @@ sed -i 's|/lib\>|/%{_lib}/%{name}|g' tools/llvm-config/llvm-config.cpp
 # clang is lovely and all, but fedora builds with gcc
 # -fno-devirtualize shouldn't be necessary, but gcc has scary template-related
 # bugs that make it so.  gcc 5 ought to be fixed.
+%if %{?devtoolset:1}0
+export CC=$(scl enable %{devtoolset} -- which gcc)
+export CXX=$(scl enable %{devtoolset} -- which g++)
+%else
 export CC=gcc
 export CXX=g++
+%endif
 %configure \
   --with-extra-options="-fno-devirtualize" \
   --with-extra-ld-options=-Wl,-Bsymbolic \

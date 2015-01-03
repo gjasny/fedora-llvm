@@ -1,0 +1,21 @@
+--- a/tools/clang/lib/Driver/ToolChains.cpp
++++ b/tools/clang/lib/Driver/ToolChains.cpp
+@@ -1062,6 +1062,18 @@
+     // And finally in /usr.
+     if (D.SysRoot.empty())
+       Prefixes.push_back("/usr");
++
++    // RedHat Developer Toolset support
++    if (const char *software_collections = getenv("X_SCLS")) {
++      SmallVector<StringRef, 4> Scls;
++      StringRef(software_collections).split(Scls, StringRef(" "), -1, false);
++      for (SmallVector<StringRef, 4>::const_iterator SclsIter = Scls.begin(); SclsIter != Scls.end(); ++SclsIter) {
++        if (!SclsIter->startswith(StringRef("devtoolset-")))
++          continue;
++        const std::string SclPath = std::string("/opt/rh/") + SclsIter->str() + std::string("/root/usr");
++        Prefixes.push_back(SclPath);
++      }
++    }
+   }
+ 
+   // Loop over the various components which exist and select the best GCC

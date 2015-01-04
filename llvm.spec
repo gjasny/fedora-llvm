@@ -44,7 +44,7 @@ BuildRequires: %{devtoolset}-gcc-c++
 
 Name:           llvm
 Version:        3.5.0
-Release:        6.1%{?dist}
+Release:        6.2%{?dist}
 Summary:        The Low Level Virtual Machine
 
 Group:          Development/Languages
@@ -717,6 +717,9 @@ exit 0
 %endif
 
 %changelog
+* Sat Jan  3 2015 Gregor Jasny <gregor.jasny@citrix.com> - 3.5.0-6.2
+- Do not claim to be GCC 4.3 (__builtin_va_arg_pack problems)
+
 * Sat Jan  3 2015 Gregor Jasny <gregor.jasny@citrix.com> - 3.5.0-6.1
 - Build clang and lldb 3.5.0 on RHEL6
 

@@ -339,9 +339,11 @@ mv lldb-*/ tools/lldb
 %endif
 
 %if %{with clang}
+%if 0%{?rhel}%{?fedora} >= 7
 pushd tools/clang
 %patch100 -p1
 popd
+%endif
 %endif
 
 %if %{with lldb}

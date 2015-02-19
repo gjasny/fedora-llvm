@@ -43,8 +43,8 @@ BuildRequires: %{devtoolset}-gcc-c++
 #global prerel rc3
 
 Name:           llvm
-Version:        3.5.0
-Release:        6.2%{?dist}
+Version:        3.5.1
+Release:        0.1%{?dist}
 Summary:        The Low Level Virtual Machine
 
 Group:          Development/Languages
@@ -717,6 +717,9 @@ exit 0
 %endif
 
 %changelog
+* Tue Jan 20 2015 Gregor Jasny <gregor.jasny@citrix.com> - 3.5.1-0.1
+- Bump to llvm 3.5.1
+
 * Sat Jan  3 2015 Gregor Jasny <gregor.jasny@citrix.com> - 3.5.0-6.2
 - Do not claim to be GCC 4.3 (__builtin_va_arg_pack problems)
 
